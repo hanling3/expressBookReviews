@@ -59,7 +59,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   let book = books[isbn];
   if (book) {
     let new_review = req.body.reviews;
-    let reviewer = req.body.reviewer;
+    let reviewer = req.session.authorization.username;
     let reviews = books[isbn]["reviews"];
     if (new_review) {
       reviews[reviewer] = new_review;
