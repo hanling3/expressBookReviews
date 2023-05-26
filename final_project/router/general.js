@@ -22,36 +22,59 @@ public_users.post("/register", (req, res) => {
 
 // Get the book list available in the shop
 public_users.get('/', function (req, res) {
-  res.send(JSON.stringify({ books }, null, 4))
+  let promise = new Promise((resolve, reject) => {
+    resolve(res.send(JSON.stringify({ books }, null, 4)))
+  })
+  promise.then(() => console.log("Promise is resolved"))
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', function (req, res) {
-  res.send(books[req.params.isbn]);
+  let promise = new Promise((resolve, reject) => {
+    let book = books[req.params.isbn];
+    if (book) {
+      resolve(res.send(book));
+    }
+    reject(res.send("The ISBN doesn't exist"));
+  })
+  promise.then(() => console.log("Promise is resolved"))
+    .catch(() => console.log("The ISBN doesn't exist"));
+
 });
 
 // Get book details based on author
 public_users.get('/author/:author', function (req, res) {
-  let books_byAuthor = {};
-  let keys = Object.keys(books);
-  keys.forEach((key) => {
-    if (books[key]["author"] === req.params.author) {
-      books_byAuthor[key] = books[key];
-    }
+  let promise = new Promise((resolve, reject) => {
+    let books_byAuthor = {};
+    let keys = Object.keys(books);
+    keys.forEach((key) => {
+      if (books[key]["author"] === req.params.author) {
+        books_byAuthor[key] = books[key];
+        resolve(res.send(JSON.stringify({ books_byAuthor }, null, 4)));
+      }
+    })
+    reject(res.send("The author doesn't exist"));
   })
-  res.send(JSON.stringify({ books_byAuthor }, null, 4))
+  promise.then(() => console.log("Promise is resolved"))
+    .catch(() => console.log("The author doesn't exist"));
+
 });
 
 // Get all books based on title
 public_users.get('/title/:title', function (req, res) {
-  let books_byTitle = {};
-  let keys = Object.keys(books);
-  keys.forEach((key) => {
-    if (books[key]["title"] === req.params.title) {
-      books_byTitle[key] = books[key];
-    }
+  let promise = new Promise((resolve, reject) => {
+    let books_byTitle = {};
+    let keys = Object.keys(books);
+    keys.forEach((key) => {
+      if (books[key]["title"] === req.params.title) {
+        books_byTitle[key] = books[key];
+        resolve(res.send(JSON.stringify({ books_byTitle }, null, 4)));
+      }
+    })
+    reject(res.send("The title doesn't exist"));
   })
-  res.send(JSON.stringify({ books_byTitle }, null, 4))
+  promise.then(() => console.log("Promise is resolved"))
+    .catch(() => console.log("The title doesn't exist"));
 });
 
 //  Get book review
